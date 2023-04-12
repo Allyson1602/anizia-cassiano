@@ -323,7 +323,7 @@ const App: FC = () => {
 					</Swiper>
 				</div>
 
-				<button onClick={() => setCurrentForm(CurrentsForm.place)} className="w-full h-11 mt-10 bg-cyan-600 text-slate-200 font-medium">Marque sua consulta</button>
+				<button onClick={() => setCurrentForm(CurrentsForm.place)} className="w-full h-11 sticky bottom-0 z-10 mt-10 bg-cyan-600 text-slate-200 font-medium">Marque sua consulta</button>
 			</div>
 			
 			<div className={`w-full h-screen ${currentForm === CurrentsForm.none ? "hidden" : "flex flex-col"}`}>
