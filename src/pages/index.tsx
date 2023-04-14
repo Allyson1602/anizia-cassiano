@@ -162,16 +162,15 @@ const App: FC = () => {
 	};
 
 	return (
-		<div className="columns-2 flex gap-2">
-			<div className={`bg-green-100 ${currentForm === CurrentsForm.none ? "block" : "hidden"}`}>
+		<div className="flex flex-row md:bg-green-50 md:p-5">
+			<div className={`bg-green-100 ${currentForm === CurrentsForm.none ? "block" : "hidden"} md:block md:w-2/3 md:mr-5 overflow-x-hidden`}>
 				<Image
 					src={bannerAnizia}
 					alt="Banner da Anizia Cassiano"
-					width={500}
-					height={500}
+					className="w-full object-contain md:h-[225px]"
 				/>
 
-				<div className="w-screen bg-white py-5 mt-20">
+				<div className="w-screen bg-white py-5 mt-20 md:w-full">
 					<Swiper
 						pagination={true}
 						grabCursor={true}
@@ -194,29 +193,29 @@ const App: FC = () => {
 					>
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
-								<p>Acupuntura</p>
-								<p className="text-sm pt-3">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="md:text-lg">Acupuntura</p>
+								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
-								<p>Reflexologia</p>
-								<p className="text-sm pt-3">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="md:text-lg">Reflexologia</p>
+								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
-								<p>Massagem</p>
-								<p className="text-sm pt-3">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="md:text-lg">Massagem</p>
+								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
-								<p>Floral de bach</p>
-								<p className="text-sm pt-3">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="md:text-lg">Floral de bach</p>
+								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 					</Swiper>
@@ -248,11 +247,11 @@ const App: FC = () => {
 					<span className="block w-1/2 mx-auto h-[2px] bg-green-700" />
 				</div>
 
-				<div className="mt-20">
+				<div className="mt-20 mb-11 md:mb-0">
 					<Swiper
 						pagination={true}
 						modules={[Pagination, Autoplay]}
-						className="w-screen h-[250px]"
+						className="w-screen h-[250px] md:w-full"
 						autoplay={{
 							delay: 2500,
 							disableOnInteraction: false,
@@ -323,11 +322,11 @@ const App: FC = () => {
 					</Swiper>
 				</div>
 
-				<button onClick={() => setCurrentForm(CurrentsForm.place)} className="w-full h-11 sticky bottom-0 z-10 mt-10 bg-cyan-600 text-slate-200 font-medium">Marque sua consulta</button>
+				<button onClick={() => setCurrentForm(CurrentsForm.place)} className="w-full h-11 fixed bottom-0 z-10 mt-10 bg-cyan-600 text-slate-200 font-medium md:hidden md:mt-0">Marque sua consulta</button>
 			</div>
 			
-			<div className={`w-full h-screen ${currentForm === CurrentsForm.none ? "hidden" : "flex flex-col"}`}>
-				<div className="bg-blue-600 flex flex-row justify-between p-3">
+			<div className={`w-full ${currentForm === CurrentsForm.none ? "hidden" : "flex flex-col"} md:bg-white md:rounded-t-md md:flex md:flex-col md:w-1/3`}>
+				<div className="bg-cyan-600 flex flex-row justify-between p-3 md:rounded-t-md">
 					<CaretLeft
 						size={24}
 						weight="light"
@@ -335,36 +334,37 @@ const App: FC = () => {
 						className={`
 							text-slate-200
 							${currentForm === CurrentsForm.place ? "invisible" : ""}
+							md:hidden
 						`}
 					/>
 					<h5 className="text-slate-200">Marque sua consulta</h5>
-					<X size={24} weight="light" onClick={() => closeForm()} className="text-slate-200" />
+					<X size={24} weight="light" onClick={() => closeForm()} className="text-slate-200 md:hidden" />
 				</div>
 
 				<form className="grow p-6">
-					<div className={currentForm !== CurrentsForm.place ? "hidden" : undefined}>
-						<label className="">Local de atendimento:</label>
+					<div className={`${currentForm !== CurrentsForm.place ? "hidden" : ""} md:block`}>
+						<label className="md:text-neutral-600">Local de atendimento:</label>
 
-						<div className="flex flex-col gap-4 p-2 mt-4">
+						<div className="flex flex-col gap-4 p-2 mt-4 md:flex-row md:justify-center">
 							<input
 								type="button"
 								value="em casa"
 								onClick={() => handleClickPlace("at-home")}
-								className="h-10 bg-blue-600 text-slate-200 rounded-md"
+								className="h-10 bg-cyan-600 text-white rounded-md md:px-3 md:text-sm"
 							/>
 
 							<input
 								type="button"
 								value="no consultório"
 								onClick={() => handleClickPlace("in-clinic")}
-								className="h-10 bg-blue-600 text-slate-200 rounded-md"
+								className="h-10 bg-cyan-600 text-white rounded-md md:px-4 md:text-sm"
 							/>
 						</div>
 					</div>
 
-					<div className={currentForm !== CurrentsForm.city ? "hidden" : undefined}>
+					<div className={`${currentForm !== CurrentsForm.city ? "hidden" : ""} md:block md:pt-6`}>
 						<div>
-							<label htmlFor="city">Selecione sua cidade:</label>
+							<label htmlFor="city" className="md:text-neutral-600">Selecione sua cidade:</label>
 
 							<div className="flex justify-center">
 								<select onChange={(event) => setCity(event.target.value)} id="city" className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md">
@@ -407,18 +407,18 @@ const App: FC = () => {
 							</div>
 						</div>
 
-						<div className="flex justify-center p-2 mt-4">
+						<div className="flex justify-center p-2 mt-4 md:hidden">
 							<button
 								onClick={handleClickCity}
 								type="button"
 								disabled={city === "" ? true : false}
-								className="h-8 w-56 bg-blue-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
 							>próximo</button>
 						</div>
 					</div>
 
-					<div className={currentForm !== CurrentsForm.therapy ? "hidden" : undefined}>
-						<label>Selecione as terapias:</label>
+					<div className={`${currentForm !== CurrentsForm.therapy ? "hidden" : ""} md:block md:pt-6`}>
+						<label className="md:text-neutral-600">Selecione as terapias:</label>
 
 						<ul className="h-80 flex flex-col p-2 mt-4 divide-y overflow-y-auto text-center">
 							<li className={checkIncludeTherapy("Bandagem") ? "bg-blue-200" : ""}>
@@ -478,18 +478,18 @@ const App: FC = () => {
 							</li>
 						</ul>
 
-						<div className="flex justify-center p-2 mt-4">
+						<div className="flex justify-center p-2 mt-4 md:hidden">
 							<button
 								onClick={() => handleClickTherapy()}
 								type="button"
 								disabled={therapys.length === 0 ? true : false}
-								className="h-8 w-56 bg-blue-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
 							>próximo</button>
 						</div>
 					</div>
 
-					<div className={currentForm !== CurrentsForm.date ? "hidden" : undefined}>
-						<label>Horário de preferência:</label>
+					<div className={`${currentForm !== CurrentsForm.date ? "hidden" : ""} md:block md:pt-6`}>
+						<label className="md:text-neutral-600">Horário de preferência:</label>
 
 						<div className="flex items-center flex-col p-2 mt-4">
 							<input type="date" onChange={handleChangeDate} value={date} className="border-b-2 border-gray-600" />
@@ -497,19 +497,19 @@ const App: FC = () => {
 							<input type="time" onChange={handleChangeTime} value={time} className="border-b-2 border-gray-600 mt-6" />
 						</div>
 
-						<div className="flex justify-center p-2 mt-4">
+						<div className="flex justify-center p-2 mt-4 md:hidden">
 							<button
 								onClick={() => handleClickDate()}
 								type="button"
 								disabled={date === "" ? true : false}
-								className="h-8 w-56 bg-blue-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
 							>próximo</button>
 						</div>
 					</div>
 
-					<div className={currentForm !== CurrentsForm.contact ? "hidden" : undefined}>
+					<div className={`${currentForm !== CurrentsForm.contact ? "hidden" : ""} md:block md:pt-6`}>
 						<div>
-							<label htmlFor="phone">WhatsApp para contato:</label>
+							<label htmlFor="phone" className="md:text-neutral-600">WhatsApp para contato:</label>
 
 							<div className="flex justify-center">
 								<PatternFormat
@@ -529,8 +529,8 @@ const App: FC = () => {
 								onClick={() => handleClickContact()}
 								type="button"
 								disabled={!checkNumberContact()}
-								className="h-8 w-56 bg-blue-600 text-slate-200 rounded-md disabled:bg-neutral-400"
-							>próximo</button>
+								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+							>terminar</button>
 							<p className="w-56 text-sm italic">Entrarei em contato pelo número do seu celular.</p>
 						</div>
 					</div>
