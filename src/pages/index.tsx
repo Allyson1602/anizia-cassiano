@@ -1,15 +1,15 @@
-import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
+import { CaretLeft, X } from "@phosphor-icons/react";
 import moment from "moment";
 import { ChangeEvent, FC, useState } from "react";
 import { PatternFormat } from "react-number-format";
 import Image from "next/image";
 import bannerAnizia from "../assets/banner.png";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, EffectCreative } from "swiper";
+import { Autoplay, Pagination, EffectFade } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/effect-creative";
+import "swiper/css/effect-fade";
 
 enum CurrentsForm {
 	none,
@@ -31,6 +31,7 @@ interface IDataForm {
 const App: FC = () => {
 	
 	const [currentForm, setCurrentForm] = useState(CurrentsForm.none);
+	const [isScheduled, setIsScheduled] = useState(false);
 
 	const [data, setData] = useState<IDataForm>({
 		lugar: "",
@@ -78,6 +79,17 @@ const App: FC = () => {
 
 	const checkIncludeTherapy = (itemTherapy: string): boolean => {
 		return therapys.some(therapy => therapy === itemTherapy);
+	};
+
+	const newSchedule = () => {
+		setData({
+			lugar: "",
+			cidade: "",
+			terapias: [],
+			data: "",
+			contato: ""
+		});
+		setIsScheduled(false);
 	};
 
 	const handleChangeTherapy = (therapy: string) => {
@@ -158,6 +170,7 @@ const App: FC = () => {
 
 	const handleClickContact = () => {
 		setData({...data, contato: contact});
+		setIsScheduled(true);
 		closeForm();
 	};
 
@@ -174,48 +187,40 @@ const App: FC = () => {
 					<Swiper
 						pagination={true}
 						grabCursor={true}
-						effect={"creative"}
-						creativeEffect={{
-						prev: {
-							shadow: true,
-							translate: [0, 0, -400],
-						},
-						next: {
-							translate: ["100%", 0, 0],
-						},
-						}}
-						modules={[EffectCreative, Autoplay, Pagination]}
+						modules={[EffectFade, Autoplay, Pagination]}
 						autoplay={{
 							delay: 3000,
 							disableOnInteraction: false,
 						}}
+        				effect={"fade"}
+						direction={"vertical"}
 						className="h-[150px]"
 					>
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
 								<p className="md:text-lg">Acupuntura</p>
-								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="text-sm pt-5 w-4/5 mx-auto md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
 								<p className="md:text-lg">Reflexologia</p>
-								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="text-sm pt-5 w-4/5 mx-auto md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
 								<p className="md:text-lg">Massagem</p>
-								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="text-sm pt-5 w-4/5 mx-auto md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 
 						<SwiperSlide>
 							<div className="px-2 h-full w-full text-center bg-white">
 								<p className="md:text-lg">Floral de bach</p>
-								<p className="text-sm pt-3 md:w-[500px] md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
+								<p className="text-sm pt-5 w-4/5 mx-auto md:mx-auto md:text-base">A acupuntura é um método terapêutico que consiste na estimulação, por meio de agulhas, de pontos específicos da pele.</p>
 							</div>
 						</SwiperSlide>
 					</Swiper>
@@ -230,7 +235,7 @@ const App: FC = () => {
 
 					<div className="pt-5 text-center">
 						<h5 className="text-lg">Anizia Cassiano Neves</h5>
-						<p className="px-2 pt-1 text-sm italic">Transformar o sofrimento em mecanismo de crescimento humano é o que faz da medicina uma arte. Sou médico por desejo de cuidar e fazer bem a quem sofre.</p>
+						<p className="px-4 pt-1 text-sm italic">Transformar o sofrimento em mecanismo de crescimento humano é o que faz da medicina uma arte. Sou médico por desejo de cuidar e fazer bem a quem sofre.</p>
 					</div>
 					
 					<div className="pb-5 px-5 pt-8">
@@ -247,75 +252,67 @@ const App: FC = () => {
 					<span className="block w-1/2 mx-auto h-[2px] bg-green-700" />
 				</div>
 
-				<div className="mt-20 mb-11 md:mb-0">
+				<div className="mt-20 mb-11 md:mb-0 bg-green-700">
+					<p className="text-xl text-white text-center pt-8">Depoimentos</p>
+
 					<Swiper
-						pagination={true}
-						modules={[Pagination, Autoplay]}
-						className="w-screen h-[250px] md:w-full"
+						modules={[Autoplay]}
+						className="w-screen h-[100px] md:w-full"
 						autoplay={{
 							delay: 2500,
 							disableOnInteraction: false,
 						}}
 					>
 						<SwiperSlide>
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
 
-						<SwiperSlide className="text-center bg-green-700 text-white flex justify-center items-center">
-							<div className="h-full flex flex-col justify-start items-center gap-6 text-center pt-9 px-2 bg-green-700 text-white font-light">
-								<p className="text-xl">Depoimentos</p>
+						<SwiperSlide className="text-center text-white flex justify-center items-center">
+							<div className="h-full flex flex-col justify-center items-center gap-6 text-center px-4 text-white font-light">
 								<p className="text-sm italic">Foi uma noite de sono excelente!!!<br/>A dor na cervical foi alivio imediato. Até meu humor e disposição estão melhores</p>
 							</div>
 						</SwiperSlide>
@@ -335,206 +332,214 @@ const App: FC = () => {
 							text-slate-200
 							${currentForm === CurrentsForm.place ? "invisible" : ""}
 							md:hidden
+							cursor-pointer
 						`}
 					/>
 					<h5 className="text-slate-200">Marque sua consulta</h5>
-					<X size={24} weight="light" onClick={() => closeForm()} className="text-slate-200 md:hidden" />
+					<X size={24} weight="light" onClick={() => closeForm()} className="text-slate-200 cursor-pointer md:hidden" />
 				</div>
 
-				<form className="grow p-6">
-					<div className={`${currentForm !== CurrentsForm.place ? "hidden" : ""} md:block`}>
-						<label className="md:text-neutral-600">Local de atendimento:</label>
-
-						<div className="flex flex-col gap-4 p-2 mt-4 md:flex-row md:justify-center">
-							<input
-								type="button"
-								value="em casa"
-								onClick={() => handleClickPlace("at-home")}
-								className="h-10 bg-cyan-600 text-white rounded-md md:px-3 md:text-sm"
-							/>
-
-							<input
-								type="button"
-								value="no consultório"
-								onClick={() => handleClickPlace("in-clinic")}
-								className="h-10 bg-cyan-600 text-white rounded-md md:px-4 md:text-sm"
-							/>
-						</div>
+				{isScheduled ? (
+					<div className="p-5 text-center">
+						<p>Muito obrigado pela confiança, entraremos em contato!!</p>
+						<button onClick={newSchedule} className="mt-7 h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm">Agendar novamente</button>
 					</div>
-
-					<div className={`${currentForm !== CurrentsForm.city ? "hidden" : ""} md:block md:pt-6`}>
-						<div>
-							<label htmlFor="city" className="md:text-neutral-600">Selecione sua cidade:</label>
-
-							<div className="flex justify-center">
-								<select onChange={(event) => setCity(event.target.value)} id="city" className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md">
-									<option value="">selecione</option>
-									<option value="ceilandia">Ceilândia</option>
-									<option value="samambaia">Samambaia</option>
-									<option value="plano-piloto">Plano Piloto</option>
-									<option value="taguatinga">Taguatinga</option>
-									<option value="planaltina">Planaltina</option>
-									<option value="guara">Guará</option>
-									<option value="gama">Gama</option>
-									<option value="recanto-emas">Recanto das Emas</option>
-									<option value="santa-maria">Santa Maria</option>
-									<option value="aguas-claras">Águas Claras</option>
-									<option value="sao-sebastiao">São Sebastião</option>
-									<option value="riacho-fundo-ii">Riacho Fundo II</option>
-									<option value="sol-nascente_por-sol">Sol Nascente/Pôr do Sol</option>
-									<option value="sobradinho-ii">Sobradinho II</option>
-									<option value="sobradinho">Sobradinho</option>
-									<option value="vicente-pires">Vicente Pires</option>
-									<option value="paranoa">Paranoá</option>
-									<option value="itapoa">Itapoã</option>
-									<option value="sudoeste_octogonal">Sudoeste/Octogonal</option>
-									<option value="brazlandia">Brazlândia</option>
-									<option value="jardim-botanico">Jardim Botânico</option>
-									<option value="riacho-fundo">Riacho Fundo</option>
-									<option value="arniqueira">Arniqueira</option>
-									<option value="lago-norte">Lago Norte</option>
-									<option value="scia">SCIA</option>
-									<option value="cruzeiro">Cruzeiro</option>
-									<option value="lago-sul">Lago Sul</option>
-									<option value="nucleo-bandeirante">Núcleo Bandeirante</option>
-									<option value="park-way">Park Way</option>
-									<option value="candangolandia">Candangolândia</option>
-									<option value="varjao">Varjão</option>
-									<option value="fercal">Fercal</option>
-									<option value="sia">SIA</option>
-									<option value="outro">Outro</option>
-								</select>
-							</div>
-						</div>
-
-						<div className="flex justify-center p-2 mt-4 md:hidden">
-							<button
-								onClick={handleClickCity}
-								type="button"
-								disabled={city === "" ? true : false}
-								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
-							>próximo</button>
-						</div>
-					</div>
-
-					<div className={`${currentForm !== CurrentsForm.therapy ? "hidden" : ""} md:block md:pt-6`}>
-						<label className="md:text-neutral-600">Selecione as terapias:</label>
-
-						<ul className="h-80 flex flex-col p-2 mt-4 divide-y overflow-y-auto text-center">
-							<li className={checkIncludeTherapy("Bandagem") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Bandagem")} className="py-3 grow">Bandagem</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Acupuntura") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Acupuntura")} className="py-3 grow">Acupuntura</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Moxaterapia") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Moxaterapia")} className="py-3 grow">Moxaterapia</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Reflexologia") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Reflexologia")} className="py-3 grow">Reflexologia</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Floral de bach") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Floral de bach")} className="py-3 grow">Floral de bach</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Auriculoterapia") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Auriculoterapia")} className="py-3 grow">Auriculoterapia</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Ventosaterapia") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Ventosaterapia")} className="py-3 grow">Ventosaterapia</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Pós-operatório") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Pós-operatório")} className="py-3 grow">Pós-operatório</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Limpeza de pele") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Limpeza de pele")} className="py-3 grow">Limpeza de pele</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Massagem - Tui Na") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Massagem - Tui Na")} className="py-3 grow">Massagem - Tui Na</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Acupuntura estética") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Acupuntura estética")} className="py-3 grow">Acupuntura estética</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Liberação miofascial") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Liberação miofascial")} className="py-3 grow">Liberação miofascial</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Massagem - Drenagem linfática") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Massagem - Drenagem linfática")} className="py-3 grow">Massagem - Drenagem linfática</button>
-							</li>
-							
-							<li className={checkIncludeTherapy("Massagem - Pedras quentes vulcânicas") ? "bg-blue-200" : ""}>
-								<button type="button" onClick={() => handleChangeTherapy("Massagem - Pedras quentes vulcânicas")} className="py-3 grow">Massagem - Pedras quentes vulcânicas</button>
-							</li>
-						</ul>
-
-						<div className="flex justify-center p-2 mt-4 md:hidden">
-							<button
-								onClick={() => handleClickTherapy()}
-								type="button"
-								disabled={therapys.length === 0 ? true : false}
-								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
-							>próximo</button>
-						</div>
-					</div>
-
-					<div className={`${currentForm !== CurrentsForm.date ? "hidden" : ""} md:block md:pt-6`}>
-						<label className="md:text-neutral-600">Horário de preferência:</label>
-
-						<div className="flex items-center flex-col p-2 mt-4">
-							<input type="date" onChange={handleChangeDate} value={date} className="border-b-2 border-gray-600" />
-
-							<input type="time" onChange={handleChangeTime} value={time} className="border-b-2 border-gray-600 mt-6" />
-						</div>
-
-						<div className="flex justify-center p-2 mt-4 md:hidden">
-							<button
-								onClick={() => handleClickDate()}
-								type="button"
-								disabled={date === "" ? true : false}
-								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
-							>próximo</button>
-						</div>
-					</div>
-
-					<div className={`${currentForm !== CurrentsForm.contact ? "hidden" : ""} md:block md:pt-6`}>
-						<div>
-							<label htmlFor="phone" className="md:text-neutral-600">WhatsApp para contato:</label>
-
-							<div className="flex justify-center">
-								<PatternFormat
-									format="(##) # ####-####"
-									type="text"
-									id="phone"
-									placeholder="(61) 9 9999-9999"
-									className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md"
-									onChange={handleChangeContact}
-									value={contact}
+				) : (
+					<form className="grow p-6">
+						<div className={`${currentForm !== CurrentsForm.place ? "hidden" : ""} md:block`}>
+							<label className="md:text-neutral-600">Local de atendimento:</label>
+	
+							<div className="flex flex-col gap-4 p-2 mt-4 md:flex-row md:justify-center">
+								<input
+									type="button"
+									value="em casa"
+									onClick={() => handleClickPlace("at-home")}
+									className={`${data.lugar === "em casa" ? "bg-cyan-800 drop-shadow-md" : ""} h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm`}
+								/>
+	
+								<input
+									type="button"
+									value="no consultório"
+									onClick={() => handleClickPlace("in-clinic")}
+									className={`${data.lugar === "no consultório" ? "bg-cyan-800 drop-shadow-md" : ""} h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm`}
 								/>
 							</div>
 						</div>
-
-						<div className="flex flex-col items-center gap-2 p-2 mt-4">
-							<button
-								onClick={() => handleClickContact()}
-								type="button"
-								disabled={!checkNumberContact()}
-								className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
-							>terminar</button>
-							<p className="w-56 text-sm italic">Entrarei em contato pelo número do seu celular.</p>
+	
+						<div className={`${currentForm !== CurrentsForm.city ? "hidden" : ""} md:block md:pt-6`}>
+							<div>
+								<label htmlFor="city" className="md:text-neutral-600">Selecione sua cidade:</label>
+	
+								<div className="flex justify-center md:justify-start">
+									<select onChange={(event) => setCity(event.target.value)} id="city" className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md">
+										<option value="">selecione</option>
+										<option value="ceilandia">Ceilândia</option>
+										<option value="samambaia">Samambaia</option>
+										<option value="plano-piloto">Plano Piloto</option>
+										<option value="taguatinga">Taguatinga</option>
+										<option value="planaltina">Planaltina</option>
+										<option value="guara">Guará</option>
+										<option value="gama">Gama</option>
+										<option value="recanto-emas">Recanto das Emas</option>
+										<option value="santa-maria">Santa Maria</option>
+										<option value="aguas-claras">Águas Claras</option>
+										<option value="sao-sebastiao">São Sebastião</option>
+										<option value="riacho-fundo-ii">Riacho Fundo II</option>
+										<option value="sol-nascente_por-sol">Sol Nascente/Pôr do Sol</option>
+										<option value="sobradinho-ii">Sobradinho II</option>
+										<option value="sobradinho">Sobradinho</option>
+										<option value="vicente-pires">Vicente Pires</option>
+										<option value="paranoa">Paranoá</option>
+										<option value="itapoa">Itapoã</option>
+										<option value="sudoeste_octogonal">Sudoeste/Octogonal</option>
+										<option value="brazlandia">Brazlândia</option>
+										<option value="jardim-botanico">Jardim Botânico</option>
+										<option value="riacho-fundo">Riacho Fundo</option>
+										<option value="arniqueira">Arniqueira</option>
+										<option value="lago-norte">Lago Norte</option>
+										<option value="scia">SCIA</option>
+										<option value="cruzeiro">Cruzeiro</option>
+										<option value="lago-sul">Lago Sul</option>
+										<option value="nucleo-bandeirante">Núcleo Bandeirante</option>
+										<option value="park-way">Park Way</option>
+										<option value="candangolandia">Candangolândia</option>
+										<option value="varjao">Varjão</option>
+										<option value="fercal">Fercal</option>
+										<option value="sia">SIA</option>
+										<option value="outro">Outro</option>
+									</select>
+								</div>
+							</div>
+	
+							<div className="flex justify-center p-2 mt-4 md:hidden">
+								<button
+									onClick={handleClickCity}
+									type="button"
+									disabled={city === "" ? true : false}
+									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								>próximo</button>
+							</div>
 						</div>
-					</div>
-				</form>
+	
+						<div className={`${currentForm !== CurrentsForm.therapy ? "hidden" : ""} md:block md:pt-6`}>
+							<label className="md:text-neutral-600">Selecione as terapias:</label>
+	
+							<ul className="h-80 flex flex-col p-2 mt-4 divide-y overflow-y-auto text-center">
+								<li className={checkIncludeTherapy("Bandagem") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Bandagem")} className="w-full py-3 grow">Bandagem</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Acupuntura") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Acupuntura")} className="w-full py-3 grow">Acupuntura</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Moxaterapia") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Moxaterapia")} className="w-full py-3 grow">Moxaterapia</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Reflexologia") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Reflexologia")} className="w-full py-3 grow">Reflexologia</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Floral de bach") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Floral de bach")} className="w-full py-3 grow">Floral de bach</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Auriculoterapia") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Auriculoterapia")} className="w-full py-3 grow">Auriculoterapia</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Ventosaterapia") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Ventosaterapia")} className="w-full py-3 grow">Ventosaterapia</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Pós-operatório") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Pós-operatório")} className="w-full py-3 grow">Pós-operatório</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Limpeza de pele") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Limpeza de pele")} className="w-full py-3 grow">Limpeza de pele</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Massagem - Tui Na") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Massagem - Tui Na")} className="w-full py-3 grow">Massagem - Tui Na</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Acupuntura estética") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Acupuntura estética")} className="w-full py-3 grow">Acupuntura estética</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Liberação miofascial") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Liberação miofascial")} className="w-full py-3 grow">Liberação miofascial</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Massagem - Drenagem linfática") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Massagem - Drenagem linfática")} className="w-full py-3 grow">Massagem - Drenagem linfática</button>
+								</li>
+								
+								<li className={checkIncludeTherapy("Massagem - Pedras quentes vulcânicas") ? "bg-blue-200" : ""}>
+									<button type="button" onClick={() => handleChangeTherapy("Massagem - Pedras quentes vulcânicas")} className="w-full py-3 grow">Massagem - Pedras quentes vulcânicas</button>
+								</li>
+							</ul>
+	
+							<div className="flex justify-center p-2 mt-4 md:hidden">
+								<button
+									onClick={() => handleClickTherapy()}
+									type="button"
+									disabled={therapys.length === 0 ? true : false}
+									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								>próximo</button>
+							</div>
+						</div>
+	
+						<div className={`${currentForm !== CurrentsForm.date ? "hidden" : ""} md:block md:pt-6`}>
+							<label className="md:text-neutral-600">Horário de preferência:</label>
+	
+							<div className="flex items-center flex-col p-2 mt-4 md:flex-row md:gap-2 md:justify-start">
+								<input type="date" onChange={handleChangeDate} value={date} className="p-2 border-solid border-2 rounded-md" />
+	
+								<input type="time" onChange={handleChangeTime} value={time} className="mt-6 p-2 border-solid border-2 rounded-md md:mt-0" />
+							</div>
+	
+							<div className="flex justify-center p-2 mt-4 md:hidden">
+								<button
+									onClick={() => handleClickDate()}
+									type="button"
+									disabled={date === "" ? true : false}
+									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								>próximo</button>
+							</div>
+						</div>
+	
+						<div className={`${currentForm !== CurrentsForm.contact ? "hidden" : ""} md:block md:pt-6`}>
+							<div>
+								<label htmlFor="phone" className="md:text-neutral-600">WhatsApp para contato:</label>
+	
+								<div className="flex justify-center md:justify-start">
+									<PatternFormat
+										format="(##) # ####-####"
+										type="text"
+										id="phone"
+										placeholder="(61) 9 9999-9999"
+										className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md"
+										onChange={handleChangeContact}
+										value={contact}
+									/>
+								</div>
+							</div>
+	
+							<div className="flex flex-col items-center gap-2 p-2 mt-11">
+								<button
+									onClick={() => handleClickContact()}
+									type="button"
+									disabled={!checkNumberContact()}
+									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400 hover:drop-shadow-md"
+								>terminar</button>
+								<p className="w-56 text-sm italic md:w-auto">Entrarei em contato pelo número do seu celular.</p>
+							</div>
+						</div>
+					</form>
+				)}
 			</div>
 		</div>
 	)
