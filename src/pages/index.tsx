@@ -496,9 +496,9 @@ const App: FC = () => {
 							<label className="md:text-neutral-600">Horário de preferência:</label>
 	
 							<div className="flex items-center flex-col p-2 mt-4 md:flex-row md:gap-2 md:justify-start">
-								<input type="date" onChange={handleChangeDate} value={date} className="p-2 border-solid border-2 rounded-md" />
+								<input type="date" onChange={handleChangeDate} value={date} placeholder="15/04/2023" className="p-2 border-solid border-2 rounded-md" />
 	
-								<input type="time" onChange={handleChangeTime} value={time} className="mt-6 p-2 border-solid border-2 rounded-md md:mt-0" />
+								<input type="time" onChange={handleChangeTime} value={time} placeholder="10:00" className="mt-6 p-2 border-solid border-2 rounded-md md:mt-0" />
 							</div>
 	
 							<div className="flex justify-center p-2 mt-4 md:hidden">
