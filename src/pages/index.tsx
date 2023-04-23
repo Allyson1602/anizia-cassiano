@@ -1,51 +1,62 @@
 import { CaretLeft, X } from "@phosphor-icons/react";
 import moment from "moment";
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { PatternFormat } from "react-number-format";
 import Image from "next/image";
 import bannerAnizia from "../assets/banner.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper";
+import emailjs from '@emailjs/browser';
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
 enum CurrentsForm {
+	fullName,
 	none,
 	place,
 	city,
 	therapy,
 	date,
-	contact,
-}
-
-interface IDataForm {
-	lugar: string;
-	cidade: string;
-	terapias: string[];
-	data: string;
-	contato: string;
+	contact
 }
 
 const App: FC = () => {
-	
 	const [currentForm, setCurrentForm] = useState(CurrentsForm.none);
 	const [isScheduled, setIsScheduled] = useState(false);
 
-	const [data, setData] = useState<IDataForm>({
-		lugar: "",
-		cidade: "",
-		terapias: [],
-		data: "",
-		contato: ""
-	});
-
 	const [date, setDate] = useState("");
+	const [fullName, setFullName] = useState("");
 	const [time, setTime] = useState("");
 	const [city, setCity] = useState("");
+	const [place, setPlace] = useState("");
 	const [contact, setContact] = useState("");
 	const [therapys, setTherapys] = useState<string[]>([]);
+
+	const sendMessageWhatsapp = async () => {
+		let validDate = date;
+		let datetime = "";
+		
+		if(validDate) {
+			let valueDate = moment(validDate).format("DD/MM/YYYY");
+
+			datetime = valueDate + " " + time;
+		}
+
+		const bodyEmail = {
+			nome: fullName,
+			local: place,
+			cidade: city,
+			terapias: therapys.join(", "),
+			data: datetime,
+			telefone: contact
+		};
+		
+		emailjs.send(process.env.emailService!, process.env.emailTemplate!, bodyEmail, process.env.emailKey);
+		
+		setIsScheduled(true);
+	};
 
 	const checkNumberContact = (): boolean => {
 		const regexDigits = /\d/g;
@@ -59,13 +70,14 @@ const App: FC = () => {
 
 	const handleClickBack = () => {
 		let currentsForm = [
+			CurrentsForm.fullName,
 			CurrentsForm.place,
 			CurrentsForm.therapy,
 			CurrentsForm.date,
 			CurrentsForm.contact
 		];
 
-		if(data.lugar === "em casa") currentsForm.splice(1, 0, CurrentsForm.city);
+		if(place === "em casa") currentsForm.splice(1, 0, CurrentsForm.city);
 
 		let index = currentsForm.indexOf(currentForm);
 		if(index > 0) {
@@ -77,18 +89,22 @@ const App: FC = () => {
 		setCurrentForm(CurrentsForm.none);
 	};
 
+	const cleanDatas = (): void => {
+		setTherapys([]);
+		setContact("");
+		setPlace("");
+		setCity("");
+		setTime("");
+		setFullName("");
+		setDate("");
+	};
+
 	const checkIncludeTherapy = (itemTherapy: string): boolean => {
 		return therapys.some(therapy => therapy === itemTherapy);
 	};
 
 	const newSchedule = () => {
-		setData({
-			lugar: "",
-			cidade: "",
-			terapias: [],
-			data: "",
-			contato: ""
-		});
+		cleanDatas();
 		setIsScheduled(false);
 	};
 
@@ -128,13 +144,17 @@ const App: FC = () => {
 	};
 
 	const handleClickCity = () => {
-		setData({...data, cidade: city});
 		setCurrentForm(CurrentsForm.therapy);
 	};
 
 	const handleClickTherapy = () => {
-		setData({...data, terapias: therapys});
 		setCurrentForm(CurrentsForm.date);
+	};
+
+	const handleChangeFullName = (event: ChangeEvent<HTMLInputElement>) => {
+		let valueFullName = event.target.value;
+
+		setFullName(valueFullName);
 	};
 
 	const handleChangeContact = (event: ChangeEvent<HTMLInputElement>) => {
@@ -146,12 +166,12 @@ const App: FC = () => {
 	const handleClickPlace = (place: string) => {
 		switch(place) {
 			case "at-home":
-				setData({...data, lugar: "em casa"});
+				setPlace("em casa");
 				setCurrentForm(CurrentsForm.city);
 				break;
 			
 			case "in-clinic":
-				setData({...data, lugar: "no consultório"});
+				setPlace("no consultório");
 				setCurrentForm(CurrentsForm.therapy);
 				break;
 		}
@@ -163,16 +183,23 @@ const App: FC = () => {
 			let valueDate = moment(date).format("DD/MM/YYYY");
 
 			let datetime = valueDate + " " + time;
-			setData({...data, data: datetime});
 			setCurrentForm(CurrentsForm.contact);
 		}
 	};
 
-	const handleClickContact = () => {
-		setData({...data, contato: contact});
-		setIsScheduled(true);
-		closeForm();
+	const handleClickFullName = () => {
+		setCurrentForm(CurrentsForm.place);
 	};
+
+	const handleClickContact = () => {
+		sendMessageWhatsapp();
+	};
+
+	useEffect(() => {
+		if (place === "no consultório") {
+			setCity("");
+		}
+	}, [place]);
 
 	return (
 		<div className="flex flex-row md:bg-green-50 md:p-5">
@@ -319,7 +346,7 @@ const App: FC = () => {
 					</Swiper>
 				</div>
 
-				<button onClick={() => setCurrentForm(CurrentsForm.place)} className="w-full h-11 fixed bottom-0 z-10 mt-10 bg-cyan-600 text-slate-200 font-medium md:hidden md:mt-0">Marque sua consulta</button>
+				<button onClick={() => setCurrentForm(CurrentsForm.fullName)} className="w-full h-11 fixed bottom-0 z-10 mt-10 bg-cyan-600 text-slate-200 font-medium md:hidden md:mt-0">Marque sua consulta</button>
 			</div>
 			
 			<div className={`w-full ${currentForm === CurrentsForm.none ? "hidden" : "flex flex-col"} md:bg-white md:rounded-t-md md:flex md:flex-col md:w-1/3`}>
@@ -342,11 +369,35 @@ const App: FC = () => {
 				{isScheduled ? (
 					<div className="p-5 text-center">
 						<p>Muito obrigado pela confiança, entraremos em contato!!</p>
-						<button onClick={newSchedule} className="mt-7 h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm">Agendar novamente</button>
+						<button onClick={newSchedule} className="mt-7 h-10 cursor-pointer bg-cyan-600 text-white rounded-md px-3 hover:drop-shadow-md md:text-sm">Agendar novamente</button>
 					</div>
 				) : (
 					<form className="grow p-6">
-						<div className={`${currentForm !== CurrentsForm.place ? "hidden" : ""} md:block`}>
+						
+						<div className={`${currentForm !== CurrentsForm.fullName ? "hidden" : ""} md:block`}>
+							<label htmlFor="fullName" className="md:text-neutral-600">Nome completo:</label>
+
+							<div className="flex justify-center md:justify-start">
+								<input
+									id="fullName"
+									placeholder="Seu nome aqui"
+									className="w-full flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md"
+									onChange={handleChangeFullName}
+									value={fullName}
+								/>
+							</div>
+
+							<div className="flex justify-center p-2 mt-4 md:hidden">
+								<button
+									onClick={() => handleClickFullName()}
+									type="button"
+									disabled={fullName === "" ? true : false}
+									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+								>próximo</button>
+							</div>
+						</div>
+
+						<div className={`${currentForm !== CurrentsForm.place ? "hidden" : ""} md:block md:pt-6`}>
 							<label className="md:text-neutral-600">Local de atendimento:</label>
 	
 							<div className="flex flex-col gap-4 p-2 mt-4 md:flex-row md:justify-center">
@@ -354,72 +405,74 @@ const App: FC = () => {
 									type="button"
 									value="em casa"
 									onClick={() => handleClickPlace("at-home")}
-									className={`${data.lugar === "em casa" ? "bg-cyan-800 drop-shadow-md" : ""} h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm`}
+									className={`${place === "em casa" ? "bg-cyan-800 drop-shadow-md" : ""} h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm`}
 								/>
 	
 								<input
 									type="button"
 									value="no consultório"
 									onClick={() => handleClickPlace("in-clinic")}
-									className={`${data.lugar === "no consultório" ? "bg-cyan-800 drop-shadow-md" : ""} h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm`}
+									className={`${place === "no consultório" ? "bg-cyan-800 drop-shadow-md" : ""} h-10 cursor-pointer bg-cyan-600 text-white rounded-md hover:drop-shadow-md md:px-3 md:text-sm`}
 								/>
 							</div>
 						</div>
-	
-						<div className={`${currentForm !== CurrentsForm.city ? "hidden" : ""} md:block md:pt-6`}>
-							<div>
-								<label htmlFor="city" className="md:text-neutral-600">Selecione sua cidade:</label>
-	
-								<div className="flex justify-center md:justify-start">
-									<select onChange={(event) => setCity(event.target.value)} id="city" className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md">
-										<option value="">selecione</option>
-										<option value="ceilandia">Ceilândia</option>
-										<option value="samambaia">Samambaia</option>
-										<option value="plano-piloto">Plano Piloto</option>
-										<option value="taguatinga">Taguatinga</option>
-										<option value="planaltina">Planaltina</option>
-										<option value="guara">Guará</option>
-										<option value="gama">Gama</option>
-										<option value="recanto-emas">Recanto das Emas</option>
-										<option value="santa-maria">Santa Maria</option>
-										<option value="aguas-claras">Águas Claras</option>
-										<option value="sao-sebastiao">São Sebastião</option>
-										<option value="riacho-fundo-ii">Riacho Fundo II</option>
-										<option value="sol-nascente_por-sol">Sol Nascente/Pôr do Sol</option>
-										<option value="sobradinho-ii">Sobradinho II</option>
-										<option value="sobradinho">Sobradinho</option>
-										<option value="vicente-pires">Vicente Pires</option>
-										<option value="paranoa">Paranoá</option>
-										<option value="itapoa">Itapoã</option>
-										<option value="sudoeste_octogonal">Sudoeste/Octogonal</option>
-										<option value="brazlandia">Brazlândia</option>
-										<option value="jardim-botanico">Jardim Botânico</option>
-										<option value="riacho-fundo">Riacho Fundo</option>
-										<option value="arniqueira">Arniqueira</option>
-										<option value="lago-norte">Lago Norte</option>
-										<option value="scia">SCIA</option>
-										<option value="cruzeiro">Cruzeiro</option>
-										<option value="lago-sul">Lago Sul</option>
-										<option value="nucleo-bandeirante">Núcleo Bandeirante</option>
-										<option value="park-way">Park Way</option>
-										<option value="candangolandia">Candangolândia</option>
-										<option value="varjao">Varjão</option>
-										<option value="fercal">Fercal</option>
-										<option value="sia">SIA</option>
-										<option value="outro">Outro</option>
-									</select>
+
+						{place === "em casa" && (
+							<div className={`${currentForm !== CurrentsForm.city ? "hidden" : ""} md:block md:pt-6`}>
+								<div>
+									<label htmlFor="city" className="md:text-neutral-600">Selecione sua cidade:</label>
+		
+									<div className="flex justify-center md:justify-start">
+										<select onChange={(event) => setCity(event.target.value)} id="city" className="w-56 flex flex-col gap-4 p-2 mt-4 border-solid border-2 rounded-md">
+											<option value="">selecione</option>
+											<option value="Ceilândia">Ceilândia</option>
+											<option value="Samambaia">Samambaia</option>
+											<option value="Plano Piloto">Plano Piloto</option>
+											<option value="Taguatinga">Taguatinga</option>
+											<option value="Planaltina">Planaltina</option>
+											<option value="Guará">Guará</option>
+											<option value="Gama">Gama</option>
+											<option value="Recanto das Emas">Recanto das Emas</option>
+											<option value="Santa Maria">Santa Maria</option>
+											<option value="Águas Claras">Águas Claras</option>
+											<option value="São Sebastião">São Sebastião</option>
+											<option value="Riacho Fundo II">Riacho Fundo II</option>
+											<option value="Sol Nascente/Pôr do Sol">Sol Nascente/Pôr do Sol</option>
+											<option value="Sobradinho II">Sobradinho II</option>
+											<option value="Sobradinho">Sobradinho</option>
+											<option value="Vicente Pires">Vicente Pires</option>
+											<option value="Paranoá">Paranoá</option>
+											<option value="Itapoã">Itapoã</option>
+											<option value="Sudoeste/Octogonal">Sudoeste/Octogonal</option>
+											<option value="Brazlândia">Brazlândia</option>
+											<option value="Jardim Botânico">Jardim Botânico</option>
+											<option value="Riacho Fundo">Riacho Fundo</option>
+											<option value="Arniqueira">Arniqueira</option>
+											<option value="Lago Norte">Lago Norte</option>
+											<option value="SCIA">SCIA</option>
+											<option value="Cruzeiro">Cruzeiro</option>
+											<option value="Lago Sul">Lago Sul</option>
+											<option value="Núcleo Bandeirante">Núcleo Bandeirante</option>
+											<option value="Park Way">Park Way</option>
+											<option value="Candangolândia">Candangolândia</option>
+											<option value="Varjão">Varjão</option>
+											<option value="Fercal">Fercal</option>
+											<option value="SIA">SIA</option>
+											<option value="Outro">Outro</option>
+										</select>
+									</div>
+								</div>
+		
+								<div className="flex justify-center p-2 mt-4 md:hidden">
+									<button
+										onClick={handleClickCity}
+										type="button"
+										disabled={city === "" ? true : false}
+										className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
+									>próximo</button>
 								</div>
 							</div>
-	
-							<div className="flex justify-center p-2 mt-4 md:hidden">
-								<button
-									onClick={handleClickCity}
-									type="button"
-									disabled={city === "" ? true : false}
-									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400"
-								>próximo</button>
-							</div>
-						</div>
+						)}
 	
 						<div className={`${currentForm !== CurrentsForm.therapy ? "hidden" : ""} md:block md:pt-6`}>
 							<label className="md:text-neutral-600">Selecione as terapias:</label>
@@ -533,9 +586,9 @@ const App: FC = () => {
 									onClick={() => handleClickContact()}
 									type="button"
 									disabled={!checkNumberContact()}
-									className="h-8 w-56 bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400 hover:drop-shadow-md"
+									className="h-10 w-full text-lg bg-cyan-600 text-slate-200 rounded-md disabled:bg-neutral-400 hover:drop-shadow-md"
 								>terminar</button>
-								<p className="w-56 text-sm italic md:w-auto">Entrarei em contato pelo número do seu celular.</p>
+								<p className="w-56 text-sm italic md:w-auto">Entraremos em contato pelo número do seu celular.</p>
 							</div>
 						</div>
 					</form>
