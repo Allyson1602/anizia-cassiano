@@ -11,6 +11,7 @@ import emailjs from '@emailjs/browser';
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import Head from "next/head";
 
 enum CurrentsForm {
 	fullName,
@@ -203,6 +204,17 @@ const App: FC = () => {
 
 	return (
 		<div className="flex flex-row md:bg-green-50 md:p-5">
+			<Head>
+				<meta charSet="UTF-8" />
+				<meta name="description" content="Apresentação dos trabalhos da acupunturista e terapeuta holística Anizia Cassiano" />
+				<meta name="keywords" content="acupuntura, terapia, dor, doença, ajuda, reflexologia, massagem, floral de bach, biomedicina, dormir, bem estar, saúde, corpo, agulha, chinesa, tradicional medicina chinesa" />
+				<meta name="author" content="Allyson Athyrson" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+				<title>Anizia Cassino</title>
+				<link rel="icon" href="./icon.png" type="image/png" />
+			</Head>
+
 			<div className={`bg-green-100 ${currentForm === CurrentsForm.none ? "block" : "hidden"} md:block md:w-2/3 md:mr-5 overflow-x-hidden`}>
 				<Image
 					src={bannerAnizia}
